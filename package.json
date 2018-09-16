@@ -1,0 +1,15 @@
+{
+  "license": "ISC",
+  "scripts": {
+    "build": "tsc --p tsconfig.prod.jsony"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.2",
+    "jest": "^23.6.0",
+    "then-sleep": "^1.0.1",
+    "typescript": "^3.0.3"
+  },
+  "peerDependencies": {
+    "mobx": "^5.1.1"
+  }
+}
