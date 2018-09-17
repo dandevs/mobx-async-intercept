@@ -39,10 +39,10 @@ export function interceptAsync(
     change: (change: IObjectWillChange) => Promise<IObjectWillChange>
 ): Lambda;
 
-export function interceptAsync(
+export function interceptAsync<T=any>(
     target: IObservableObject,
     property: string,
-    change: (change: IValueWillChange<any>) => Promise<IValueWillChange<any>>
+    change: (change: IValueWillChange<T>) => Promise<IValueWillChange<T>>
 ): Lambda;
 // #endregion
 
