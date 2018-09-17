@@ -2,14 +2,14 @@ import { interceptAsync } from "../src/index";
 import { observable, when } from "mobx";
 import sleep from "then-sleep";
 
-it("Works", async () => {
-    jest.setTimeout(150);
+jest.setTimeout(150);
 
+it("Works", async () => {
     const data = observable({
         value: "..."
     });
 
-    interceptAsync(data, async (change) => {
+    const disposer = interceptAsync(data, async (change) => {
         if (change.type !== "update")
             return change;
 
@@ -20,4 +20,30 @@ it("Works", async () => {
 
     data.value = "hello";
     await when(() => data.value === "hello world");
+    expect(data.value).toEqual("hello world");
+    disposer();
+});
+
+it("Ignore old intercepts", async () => {
+    const data = observable({
+        value: "..."
+    });
+    let n = 1;
+
+    const disposer = interceptAsync(data, async (change) => {
+        if (change.type !== "update")
+            return change;
+
+        await sleep(20 / n);
+        change.newValue += ` ${n}`;
+        n++;
+        return change;
+    });
+
+    data.value = "first";
+    data.value = "second";
+
+    await when(() => data.value === "second 2");
+    expect(data.value).toEqual("second 2");
+    disposer();
 });
