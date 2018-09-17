@@ -1,5 +1,5 @@
 import { interceptAsync } from "../src/index";
-import { observable, when, ObservableMap } from "mobx";
+import { observable, when, ObservableMap, intercept } from "mobx";
 import sleep from "then-sleep";
 
 //TODO: Clean these tests up / seperate files?
@@ -47,6 +47,26 @@ it("Ignore old intercepts", async () => {
     await when(() => data.value !== "...");
     expect(data.value).toEqual("second 2");
     disposer();
+});
+
+it("Handles intercept with property", async () => {
+    const data = observable({
+        value: "...",
+        other: "...",
+    });
+
+    interceptAsync(data, "value", async (change) => {
+        change.newValue += " world";
+        await sleep(10);
+        return change;
+    });
+
+    data.value = "hello";
+    data.other = "foo";
+
+    await when(() => data.value === "hello world");
+    expect(data.value).toEqual("hello world");
+    expect(data.other).toEqual("foo");
 });
 
 it("Handles observable.box", async () => {

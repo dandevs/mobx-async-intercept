@@ -38,16 +38,32 @@ export function interceptAsync(
     target: IObservableObject,
     change: (change: IObjectWillChange) => Promise<IObjectWillChange>
 ): Lambda;
+
+export function interceptAsync(
+    target: IObservableObject,
+    property: string,
+    change: (change: IValueWillChange<any>) => Promise<IValueWillChange<any>>
+): Lambda;
 // #endregion
 
 export function interceptAsync(
-    target: any,
-    handler: (change: any) => Promise<any>,
+    target:            any,
+    handlerOrProperty: ((change: any) => Promise<any>)|string,
+    handlerBackfill?:  (change: any) => Promise<any>
 ){
-    let acceptedChange;
-    let activePromise: Promise<any>;
+    let handler:        (change: any) => Promise<any>,
+        property:       string,
+        acceptedChange: any,
+        activePromise:  Promise<any>;
 
-    const disposer = intercept(target as any, (change) => {
+    if (typeof handlerOrProperty === "string") {
+        handler = handlerBackfill;
+        property = handlerOrProperty as string;
+    }
+    else
+        handler = handlerOrProperty as any;
+
+    const interceptor = (change) => {
         if (acceptedChange) {
             const t = acceptedChange;
             acceptedChange = undefined;
@@ -61,7 +77,7 @@ export function interceptAsync(
             acceptedChange = handlerChange;
 
             if (isObservableObject(target))
-                target[handlerChange.name] = Math.random();
+                target[property||handlerChange.name] = Math.random();
 
             else if (isObservableArray(target))
                 target.push(0);
@@ -74,10 +90,13 @@ export function interceptAsync(
         });
 
         return null;
-    });
+    };
+
+    const disposer = property ?
+        intercept(target, property, interceptor) :
+        intercept(target, interceptor);
 
     return disposer;
 }
 
-type HandlerOutput = IObjectWillChange|IValueWillChange<any>|IArrayWillChange|IMapWillChange|null;
 export default interceptAsync;
