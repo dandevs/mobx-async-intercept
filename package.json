@@ -1,7 +1,11 @@
 {
+  "name": "mobx-async-intercept",
+  "main": "dist/index.js",
+  "version": "1.0.0",
   "license": "ISC",
   "scripts": {
-    "build": "tsc --p tsconfig.prod.json"
+    "build": "tsc --p tsconfig.prod.json",
+    "prepublish": "yarn build"
   },
   "devDependencies": {
     "@types/jest": "^23.3.2",
