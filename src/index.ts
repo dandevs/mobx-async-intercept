@@ -35,14 +35,14 @@ export function interceptAsync<K, V>(
 ): Lambda;
 
 export function interceptAsync(
-    target: IObservableObject,
+    target: Object,
     change: (change: IObjectWillChange) => Promise<IObjectWillChange>
 ): Lambda;
 
-export function interceptAsync<T=any>(
-    target: IObservableObject,
-    property: string,
-    change: (change: IValueWillChange<T>) => Promise<IValueWillChange<T>>
+export function interceptAsync<T extends Object, K extends keyof T>(
+    target: T,
+    property: K,
+    change: (change: IValueWillChange<any>) => Promise<IValueWillChange<any>>
 ): Lambda;
 // #endregion
 
