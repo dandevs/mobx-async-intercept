@@ -22,5 +22,8 @@
     "intercept",
     "promise"
   ],
-  "homepage": "https://github.com/dandevs/mobx-async-intercept"
+  "homepage": "https://github.com/dandevs/mobx-async-intercept",
+  "jest": {
+    "testEnvironment": "node"
+  }
 }
