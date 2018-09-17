@@ -39,10 +39,10 @@ export function interceptAsync(
     change: (change: IObjectWillChange) => Promise<IObjectWillChange>
 ): Lambda;
 
-export function interceptAsync<T extends Object, K extends keyof T>(
+export function interceptAsync<T extends Object, K extends keyof T, F>(
     target: T,
     property: K,
-    change: (change: IValueWillChange<any>) => Promise<IValueWillChange<any>>
+    change: (change: IValueWillChange<T[K]>) => Promise<IValueWillChange<T[K]>>
 ): Lambda;
 // #endregion
 
