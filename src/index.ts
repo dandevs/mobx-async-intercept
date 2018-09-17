@@ -77,16 +77,16 @@ export function interceptAsync(
             acceptedChange = handlerChange;
 
             if (isObservableObject(target))
-                target[property||handlerChange.name] = Math.random();
+                target[property||handlerChange.name] = 0;
 
             else if (isObservableArray(target))
                 target.push(0);
 
             else if (isObservableMap(target))
-                target.set(handlerChange.name, Math.random());
+                target.set(handlerChange.name, 0);
 
             else if (isBoxedObservable(target))
-                target.set(Math.random());
+                target.set(0);
         });
 
         return null;
