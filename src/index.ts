@@ -30,7 +30,7 @@ export function interceptAsync<T>(
 ): Lambda;
 
 export function interceptAsync<K, V>(
-    target: ObservableMap<K, V>|Map<K, V>,
+    target: ObservableMap<K, V>,
     change: (change: IMapWillChange<K, V>) => Promise<IMapWillChange<K, V>>
 ): Lambda;
 
