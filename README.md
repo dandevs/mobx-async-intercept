@@ -26,7 +26,7 @@ export function interceptAsync(
     change: (change: IObjectWillChange) => Promise<IObjectWillChange>
 ): Lambda;
 
-export function interceptAsync<T extends Object, K extends keyof T, F>(
+export function interceptAsync<T extends Object, K extends keyof T>(
     target: T,
     property: K,
     change: (change: IValueWillChange<T[K]>) => Promise<IValueWillChange<T[K]>>
