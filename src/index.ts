@@ -47,7 +47,6 @@ export function interceptAsync(
     let acceptedChange;
     let activePromise: Promise<any>;
 
-
     const disposer = intercept(target as any, (change) => {
         if (acceptedChange) {
             const t = acceptedChange;
