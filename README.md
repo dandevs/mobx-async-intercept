@@ -1,5 +1,8 @@
 TODO: Write an actual README
 
+## Caveat
+Any new values intercepted will discard previous promises
+
 ```ts
 type ArrayHandlerType<T> = IArrayWillChange<T>|IArrayWillSplice<T>;
 
