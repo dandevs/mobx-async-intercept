@@ -4,11 +4,11 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "declaration": true,
-        "sourceMap": true,
 
         "target": "es6",
         "module": "commonjs",
-        "outDir": "dist"
+        "outDir": "dist",
+        "removeComments": true,
     },
 
     "include": [
