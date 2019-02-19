@@ -15,7 +15,7 @@
     "typescript": "^3.0.3"
   },
   "peerDependencies": {
-    "mobx": "^5.1.1"
+    "mobx": "^5"
   },
   "keywords": [
     "mobx",
