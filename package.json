@@ -2,7 +2,7 @@
   "name": "mobx-async-intercept",
   "description": "Use mobx intercepts with promises/async",
   "main": "dist/index.js",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "license": "ISC",
   "scripts": {
     "build": "tsc --p tsconfig.prod.json",
