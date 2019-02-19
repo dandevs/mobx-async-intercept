@@ -9,7 +9,6 @@ import {
     IArrayWillChange,
     IMapWillChange,
     IObservableValue,
-    IObservableObject,
     IObservableArray,
     ObservableMap,
     IArrayWillSplice,
@@ -53,8 +52,10 @@ export function interceptAsync(
 ){
     let handler:        (change: any) => Promise<any>,
         property:       string,
-        acceptedChange: any,
-        activePromise:  Promise<any>;
+        acceptedChange: any;
+
+    const changedIndexes = new Map(),
+          targetType     = getTargetType(target);
 
     if (typeof handlerOrProperty === "string") {
         handler = handlerBackfill;
@@ -63,31 +64,50 @@ export function interceptAsync(
     else
         handler = handlerOrProperty as any;
 
-    const interceptor = (change) => {
+    const interceptor = (change: any) => {
         if (acceptedChange) {
             const t = acceptedChange;
             acceptedChange = undefined;
             return t;
         }
 
-        const thisPromise = activePromise = handler(change).then((handlerChange: any) => {
-            if (thisPromise !== activePromise || handlerChange === null || !handlerChange)
-                return;
+        const updateByIndex = (index: string | number, updateType: "index" | "map" | "box" = "index") => {
+            const thisPromise = handler(change).then((handlerChange: any) => {
+                if (changedIndexes.get(index) !== thisPromise)
+                    return;
 
-            acceptedChange = handlerChange;
+                acceptedChange = handlerChange;
 
-            if (isObservableObject(target))
-                target[property||handlerChange.name] = 0;
+                switch (updateType) {
+                    case "index":
+                        target[index] = 0;
+                        break;
 
-            else if (isObservableArray(target))
-                target.push(0);
+                    case "map": case "box":
+                        target.set(index, 0);
+                }
+            });
 
-            else if (isObservableMap(target))
-                target.set(handlerChange.name, 0);
+            changedIndexes.set(index, thisPromise);
+        };
 
-            else if (isBoxedObservable(target))
-                target.set(0);
-        });
+        switch (targetType) {
+            case TargetType.OBJECT:
+                updateByIndex(property || change.name);
+                break;
+
+            case TargetType.ARRAY:
+                updateByIndex(change.index);
+                break;
+
+            case TargetType.MAP:
+                updateByIndex(change.name, "map");
+                break;
+
+            case TargetType.BOX:
+                updateByIndex(change.name, "box");
+                break;
+        }
 
         return null;
     };
@@ -98,5 +118,21 @@ export function interceptAsync(
 
     return disposer;
 }
+
+function getTargetType(target: any) {
+    if (isObservableObject(target))
+        return TargetType.OBJECT;
+
+    else if (isObservableArray(target))
+        return TargetType.ARRAY;
+
+    else if (isObservableMap(target))
+        return TargetType.MAP;
+
+    else if (isBoxedObservable(target))
+        return TargetType.BOX;
+}
+
+const enum TargetType { OBJECT, ARRAY, MAP, BOX }
 
 export default interceptAsync;
