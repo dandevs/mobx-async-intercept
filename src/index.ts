@@ -76,6 +76,7 @@ export function interceptAsync(
                 if (changedIndexes.get(index) !== thisPromise)
                     return;
 
+                changedIndexes.delete(index);
                 acceptedChange = handlerChange;
 
                 switch (updateType) {
