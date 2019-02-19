@@ -105,7 +105,7 @@ export function interceptAsync(
                 break;
 
             case TargetType.BOX:
-                updateByIndex(change.name, "box");
+                updateByIndex(0, "box");
                 break;
         }
 
